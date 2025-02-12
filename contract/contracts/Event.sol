@@ -6,6 +6,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./BiletNFT.sol";
+import "hardhat/console.sol";
 
 contract Event is Ownable {
     string public eveniment;
@@ -23,7 +24,7 @@ contract Event is Ownable {
         pretBilet = _pretBilet;
         disponibilitateBilete = _disponibilitateBilete;
         anulat = false;
-        bilet = new BiletNFT(_eveniment, "BILET", _pretBilet, _disponibilitateBilete);
+        bilet = new BiletNFT(_eveniment, "BILET", _pretBilet, _disponibilitateBilete,owner());
     }
     
     event EventAnulat();
@@ -35,7 +36,7 @@ contract Event is Ownable {
     }
 
     function cumparaBilet() external payable {
-        require(!anulat, "Evenimentul e anulat");
+        require(!anulat, "Evenimentul este anulat");
         require(msg.value == pretBilet, "Suma ETH gresita");
 
         bilet.cumparaBilet{value: msg.value}();
@@ -49,13 +50,12 @@ contract Event is Ownable {
     }
     
     function refundBilet(uint256 ticketId) external {
-        require(anulat, "Evenimentul este anulat");
-        require(bilet.ownerOf(ticketId) == msg.sender," ");
+        require(anulat, "Evenimentul nu este anulat");
         require(address(this).balance >= pretBilet, "Fonduri insuficiente pentru refund");
 
-        bilet.transferFrom(msg.sender, owner(), ticketId);
+        bilet.transferBilet(owner(),ticketId);
         payable(msg.sender).transfer(pretBilet);
         emit RefundCerut(msg.sender, ticketId);
     }
-    
+    receive() external payable {}
 }
