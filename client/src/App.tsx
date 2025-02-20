@@ -6,11 +6,13 @@ import BuyTicket from "./components/buyTicket";
 import Profile from "./components/profile";
 import EventDetails from "./components/eventPage";
 import { MetaMaskProvider } from "./contexts/metaMaskContext";
+import Navbar from "./components/navbar";
 
 const App = () => {
   return (
     <MetaMaskProvider>
       <Router>
+      <Navbar />
         <Routes>
           <Route path="/" element={<EventList />} />
           <Route path="/create" element={<CreateEvent />} />
