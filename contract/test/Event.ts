@@ -11,7 +11,8 @@ describe("Event", function () {
         event = await Event.deploy(
             "Festival Rockstadt",
             ethers.parseEther("0.1"),
-            50
+            50,
+            "Un concert rock!","https://i.imgflip.com/8q7uek.jpg"
         );
         await event.deploymentTransaction()?.wait(1);
         await owner.sendTransaction({ to: await event.getAddress(), value: ethers.parseEther("1.0") });
@@ -88,5 +89,14 @@ describe("Event", function () {
 
     it("Should not allow withdrawal if there are no funds", async function () {
         await expect(event.connect(user).withdraw()).to.be.revertedWith("Nu ai fonduri de retras");
+    });
+    it("should fail when trying to buy more tickets than available", async function () {
+        const ticketPrice = ethers.parseEther("0.1");
+        const availableTickets = 50;
+        for (let i = 0; i < availableTickets; i++) {
+            await event.connect(user).cumparaBilet({ value: ticketPrice });
+        }
+        await expect(event.connect(user).cumparaBilet({ value: ticketPrice }))
+            .to.be.revertedWith("Nu mai sunt bilete disponibile");
     });
 });
