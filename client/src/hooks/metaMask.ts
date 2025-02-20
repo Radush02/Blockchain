@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { MetaMaskInpageProvider } from "@metamask/providers";
 import EventFactory from "../contracts/EventFactory.json";
-import Event from "../contracts/Event.json";
 
 declare global {
   interface Window {
@@ -16,7 +15,6 @@ export const useMetaMask = () => {
   const [account, setAccount] = useState<string | null>(null);
   const [balance, setBalance] = useState<string>("0");
   const [eventFactoryContract, setEventFactoryContract] = useState<ethers.Contract | null>(null);
-  const [eventContract, setEventContract] = useState<ethers.Contract | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
   console.log(account);
   const connectWallet = async () => {
@@ -38,38 +36,31 @@ export const useMetaMask = () => {
         setBalance(ethers.formatEther(balance));
 
         const eventFactory = new ethers.Contract(
-          "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9", 
+          "0x5FbDB2315678afecb367f032d93F642f64180aa3", 
           EventFactory.abi,
           signer
         );
         setEventFactoryContract(eventFactory);
 
-        const event = new ethers.Contract(
-          "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-          Event.abi,
-          signer
-        );
-        setEventContract(event);
-
         setIsInitialized(true);
       } catch (error) {
         console.error("Eroare la conectarea la MetaMask:", error);
-        alert("Eroare la conectarea la MetaMask. Verifică consola pentru detalii.");
+        alert("Eroare la conectarea la MetaMask.");
       }
     } else {
-      alert("Te rog instalează MetaMask!");
+      alert("Te rog instaleaza MetaMask!");
     }
   };
 
 
   useEffect(() => {
-    console.log("Se verifică conexiunea la MetaMask...");
+    console.log("Se verifica conexiunea la MetaMask...");
     const checkConnection = async () => {
       if (window.ethereum && !account) {
         console.log("Niciun cont activ, verific conexiunea...");
         const accounts = await window.ethereum.request({ method: "eth_accounts" }) as string[] | undefined;
         if (accounts && accounts.length > 0) {
-          console.log("Se apelează connectWallet()");
+          console.log("Se apeleaza connectWallet()");
           await connectWallet();
         }
       }
@@ -78,5 +69,5 @@ export const useMetaMask = () => {
     checkConnection();
   }, [account]);
   
-  return { provider, signer, account, balance, eventFactoryContract, eventContract, connectWallet, isInitialized };
+  return { provider, signer, account, balance, eventFactoryContract, connectWallet, isInitialized };
 };

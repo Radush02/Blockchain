@@ -18,7 +18,7 @@ export const MetaMaskProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 export const useMetaMaskContext = (): MetaMaskContextType => {
   const context = useContext(MetaMaskContext);
   if (!context) {
-    throw new Error("useMetaMaskContext trebuie folosit în interiorul unui MetaMaskProvider");
+    throw new Error();
   }
   return context;
 };

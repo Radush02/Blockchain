@@ -6,21 +6,17 @@ import "./Event.sol";
 contract EventFactory {
     mapping(uint256 => address) public evenimente;
     uint256 public nextEventId;
-
-    event EventCreat(address indexed adresaEvent, string eveniment, uint256 pretBilet, uint256 disponibilitateBilete);
-
-    function createEvent(string memory _eveniment, uint256 _pretBilet, uint256 _disponibilitateBilete) external {
-        Event e = new Event(_eveniment, _pretBilet, _disponibilitateBilete);
+    event EventCreat(address indexed adresaEvent, string eveniment, uint256 pretBilet, uint256 disponibilitateBilete, string descriere, string urlImagine);
+    function createEvent(
+        string memory _eveniment, 
+        uint256 _pretBilet, 
+        uint256 _disponibilitateBilete, 
+        string memory _descriere, 
+        string memory _urlImagine
+    ) external {
+        Event e = new Event(_eveniment, _pretBilet, _disponibilitateBilete, _descriere,_urlImagine);
         evenimente[nextEventId] = address(e);
-        emit EventCreat(address(e), _eveniment, _pretBilet, _disponibilitateBilete);
+        emit EventCreat(address(e), _eveniment, _pretBilet, _disponibilitateBilete, _descriere,_urlImagine);
         nextEventId++;
-    }
-
-    function getEvents() external view returns (address[] memory) {
-        address[] memory e = new address[](nextEventId);
-        for (uint256 i = 0; i < nextEventId; i++) {
-            e[i] = evenimente[i];
-        }
-        return e;
     }
 }

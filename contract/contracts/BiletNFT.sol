@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract BiletNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
     uint256 public pretBilet;
-    uint256 public nrTotalBilete;
     uint256 public bileteVandute;
     address public eventContract;
 
@@ -15,11 +14,9 @@ contract BiletNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
         string memory _numeEvent,
         string memory _simbolEvent,
         uint256 _pretBilet,
-        uint256 _nrTotalBilete,
         address _eventContract
     ) ERC721(_numeEvent, _simbolEvent) Ownable(_eventContract) { 
         pretBilet = _pretBilet;
-        nrTotalBilete = _nrTotalBilete;
         eventContract = _eventContract;
     }
 
@@ -27,7 +24,6 @@ contract BiletNFT is ERC721URIStorage, ERC721Enumerable, Ownable {
 
     function cumparaBilet(address recipient) external payable {
         require(msg.value == pretBilet, "Suma de ETH incorect trimisa");
-        require(bileteVandute < nrTotalBilete, "Nu mai sunt bilete disponibile");
 
         uint256 ticketId = bileteVandute + 1;
         _safeMint(recipient, ticketId);

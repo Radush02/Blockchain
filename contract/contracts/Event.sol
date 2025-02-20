@@ -8,10 +8,12 @@ import "./BiletNFT.sol";
 contract Event is Ownable, IERC721Receiver {
     string public eveniment;
     uint256 public pretBilet;
+    uint256 public bileteRamase;
+    string public descriere;
+    string public urlImagine;
     bool public anulat;
     BiletNFT public bilet;
     mapping(address => uint256) public retrageri;
-
   
     event RefundCerut(address indexed detinator, uint256 indexed idBilet);
     event BiletCumparatEvent(address indexed cumparator);
@@ -19,11 +21,16 @@ contract Event is Ownable, IERC721Receiver {
     constructor(
         string memory _eveniment, 
         uint256 _pretBilet, 
-        uint256 _disponibilitateBilete
+        uint256 _disponibilitateBilete,
+        string memory _descriere,
+        string memory _urlImagine
     ) Ownable(msg.sender) {
         eveniment = _eveniment;
         pretBilet = _pretBilet;
-        bilet = new BiletNFT(_eveniment, "BILET", _pretBilet, _disponibilitateBilete, address(this));
+        bileteRamase = _disponibilitateBilete;
+        descriere = _descriere;
+        _urlImagine = urlImagine;
+        bilet = new BiletNFT(_eveniment, "BILET", _pretBilet, address(this));
     }
 
     function onERC721Received(address, address, uint256, bytes calldata) external pure returns (bytes4) {
@@ -33,7 +40,9 @@ contract Event is Ownable, IERC721Receiver {
     function cumparaBilet() external payable {
         require(!anulat, "Evenimentul este anulat");
         require(msg.value == pretBilet, "Suma ETH gresita");
+        require(bileteRamase > 0, "Nu mai sunt bilete disponibile");
         bilet.cumparaBilet{value: msg.value}(msg.sender);
+        bileteRamase--;
         emit BiletCumparatEvent(msg.sender);
     }
 

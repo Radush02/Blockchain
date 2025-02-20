@@ -7,6 +7,8 @@ const CreateEvent = () => {
   const [eventName, setEventName] = useState("");
   const [ticketPrice, setTicketPrice] = useState("");
   const [ticketSupply, setTicketSupply] = useState("");
+  const [ticketDescription, setTicketDescription] = useState("");
+  const [ticketImage, setTicketImage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleCreateEvent = async () => {
@@ -20,10 +22,13 @@ const CreateEvent = () => {
       const tx = await eventFactoryContract.createEvent(
         eventName,
         ethers.parseEther(ticketPrice),
-        ticketSupply
+        ticketSupply,
+        ticketDescription,
+        ticketImage
       );
       await tx.wait();
       alert("Eveniment creat cu succes!");
+      window.location.href = "/";
     } catch (error) {
       console.error(error);
       alert("Eroare la crearea evenimentului.");
@@ -34,7 +39,7 @@ const CreateEvent = () => {
 
   return (
     <div>
-      <h2>Creează Eveniment</h2>
+      <h2>Creeaza Eveniment</h2>
       <input
         type="text"
         placeholder="Nume Eveniment"
@@ -52,6 +57,18 @@ const CreateEvent = () => {
         placeholder="Numar Bilete"
         value={ticketSupply}
         onChange={(e) => setTicketSupply(e.target.value)}
+      />
+      <input
+      type="text"
+      placeholder="Descriere Eveniment"
+      value={ticketDescription}
+      onChange={(e) => setTicketDescription(e.target.value)}
+      />
+      <input
+      type="text"
+      placeholder="URL Imagine"
+      value={ticketImage}
+      onChange={(e) => setTicketImage(e.target.value)}
       />
       <button onClick={handleCreateEvent} disabled={loading}>
         {loading ? "Se proceseaza..." : "Creeaza Eveniment"}
